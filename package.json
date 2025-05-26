@@ -2,16 +2,17 @@
   "name": "react-reactive-val",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
+    "prepublish": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "peerDependencies": {
     "react": "^19.0.0"
   },
   "keywords": [],
-  "author": "",
+  "author": "Jatin Parate <jatin4228@gmail.com>",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
