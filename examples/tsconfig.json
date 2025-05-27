@@ -28,6 +28,6 @@
       "react-reactive-val": ["../src"]
     }
   },
-  "include": ["counter/src", "todo/src"],
+  "include": ["counter/src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

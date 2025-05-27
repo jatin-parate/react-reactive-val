@@ -5,12 +5,15 @@ This directory contains example applications demonstrating how to use React Reac
 ## Examples
 
 ### 1. Counter Example
+
 A simple example showing both local and shared state management using React Reactive Val. This example demonstrates:
+
 - Using `useReactiveValue` for component-local state
 - Using `reallyReactiveVal` for shared state across components
 - Basic state updates and reads
 
 To run the counter example:
+
 ```bash
 cd counter
 npm install
@@ -18,7 +21,9 @@ npm start
 ```
 
 ### 2. Todo List Example
+
 A more complex example showing how to build a full todo application with React Reactive Val. This example demonstrates:
+
 - Managing complex state with TypeScript
 - Sharing state across multiple components
 - Filtering and transforming state
@@ -26,6 +31,7 @@ A more complex example showing how to build a full todo application with React R
 - Multiple state updates
 
 To run the todo example:
+
 ```bash
 cd todo
 npm install
@@ -62,10 +68,5 @@ examples/
 │   │   ├── App.tsx
 │   │   └── styles.css
 │   └── package.json
-├── todo/             # Todo list example
-│   ├── src/
-│   │   ├── App.tsx
-│   │   └── styles.css
-│   └── package.json
 └── README.md         # This file
-``` 
+```

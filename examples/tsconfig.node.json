@@ -6,5 +6,5 @@
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true
   },
-  "include": ["counter/vite.config.ts", "todo/vite.config.ts"]
-} 
+  "include": ["counter/vite.config.ts"]
+}
