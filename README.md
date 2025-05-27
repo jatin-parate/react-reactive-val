@@ -48,6 +48,7 @@ You can register side effects to run whenever a reactive value changes:
 
 ```tsx
 import { reallyReactiveVal, useReactiveEffect } from 'react-reactive-val';
+import { useCallback } from 'react';
 
 // Create a shared reactive value
 const [count, CountProvider] = reallyReactiveVal(0);
@@ -64,10 +65,21 @@ cleanup();
 
 // Or use the hook in components for automatic cleanup
 function CounterWithEffect() {
-  useReactiveEffect(count, value => {
+  // Using useCallback to memoize the effect callback
+  const effectCallback = useCallback((value: number) => {
     console.log(`Count in component is: ${value}`);
     return () => console.log('Component effect cleanup');
-  });
+  }, []); // Empty deps array since we don't use any external values
+
+  useReactiveEffect(count, effectCallback);
+
+  // You can also inline it if you prefer
+  useReactiveEffect(
+    count,
+    useCallback(value => {
+      console.log(`Count changed to: ${value}`);
+    }, [])
+  );
 
   return (
     <div>
@@ -164,19 +176,37 @@ const [value, Provider, useValue] = reallyReactiveVal(initialValue);
 
 ### `useReactiveEffect<T>(reactiveValue: FnType<T>, callback: EffectCallback<T>)`
 
-A React hook for managing side effects with reactive values.
+A React hook for managing side effects with reactive values. Best used with `useCallback` to prevent unnecessary effect re-registrations.
 
 ```tsx
-useReactiveEffect(value, newValue => {
-  console.log(`Value changed to: ${newValue}`);
-  return () => {
-    // Optional cleanup
-  };
-});
+// Basic usage
+useReactiveEffect(
+  value,
+  useCallback(newValue => {
+    console.log(`Value changed to: ${newValue}`);
+    return () => {
+      // Optional cleanup
+    };
+  }, [])
+); // Empty deps array if not using external values
+
+// With dependencies
+const deps = useMemo(() => ({ min: 0, max: 100 }), []);
+useReactiveEffect(
+  value,
+  useCallback(
+    newValue => {
+      if (newValue > deps.max || newValue < deps.min) {
+        console.log('Value out of bounds!');
+      }
+    },
+    [deps]
+  )
+);
 ```
 
 - `reactiveValue`: The reactive value to watch
-- `callback`: Function to run when the value changes
+- `callback`: Function to run when the value changes (recommended to wrap with useCallback)
 - The callback can optionally return a cleanup function
 
 ### Usage with Value Getter/Setter
