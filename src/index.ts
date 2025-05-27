@@ -6,8 +6,8 @@ import {
   useMemo,
   createContext,
   useContext,
-  Component as ReactComponent,
   PropsWithChildren,
+  type JSX,
 } from 'react';
 import { jsx } from 'react/jsx-runtime';
 
@@ -64,7 +64,7 @@ export const reallyReactiveVal = <T extends ReactNode>(initialValue: T) => {
     children,
   }: PropsWithChildren) {
     return jsx(Context.Provider, { value: reactiveValue, children });
-  }) as unknown as ReactComponent;
+  }) as unknown as JSX.Element;
 
   return [reactiveValue as FnType<T>, ContextProvider];
 };
