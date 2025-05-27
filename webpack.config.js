@@ -29,8 +29,7 @@ const cjsConfig = {
     filename: 'index.cjs.js',
     library: {
       type: 'commonjs2',
-    },
-    clean: true,
+    }
   },
   externals: {
     react: 'commonjs2 react'
