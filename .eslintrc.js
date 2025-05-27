@@ -27,13 +27,5 @@ module.exports = {
     'react-hooks/exhaustive-deps': 'warn',
     'no-console': 'warn'
   },
-  overrides: [
-    {
-      files: ['examples/**/*'],
-      rules: {
-        'no-console': 'off',
-        '@typescript-eslint/no-unused-vars': 'warn'
-      }
-    }
-  ]
+  ignorePatterns: ['dist/**/*', 'examples/**/*']
 }; 
