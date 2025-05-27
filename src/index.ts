@@ -6,12 +6,25 @@ import {
   useMemo,
   createContext,
   useContext,
+  Component as ReactComponent,
+  PropsWithChildren,
 } from 'react';
 import { jsx } from 'react/jsx-runtime';
 
 export default function useReactiveValue<T extends ReactNode>(initialValue: T) {
   return useMemo(() => reallyReactiveVal(initialValue), [initialValue]);
 }
+
+type UpdaterType<T> = T | ((currVal: T) => T);
+type FnType<T> = <U extends UpdaterType<T> | unknown | undefined>(
+  updater?: U
+) => U extends UpdaterType<T> ? undefined : ReactElement;
+
+const Context = createContext<FnType<ReactElement> | null>(null);
+
+export const useReactiveValueContext = () => {
+  return useContext(Context);
+};
 
 export const reallyReactiveVal = <T extends ReactNode>(initialValue: T) => {
   let value: T = initialValue;
@@ -29,11 +42,7 @@ export const reallyReactiveVal = <T extends ReactNode>(initialValue: T) => {
     return currVal;
   });
 
-  type Updater = T | ((currVal: T) => T);
-
-  type FnType = <U extends Updater | unknown | undefined>(
-    updater?: U
-  ) => U extends Updater ? undefined : ReactElement;
+  type Updater = UpdaterType<T>;
 
   function reactiveValue<U extends Updater | unknown | undefined>(updater?: U) {
     if (typeof updater === 'undefined') {
@@ -50,15 +59,12 @@ export const reallyReactiveVal = <T extends ReactNode>(initialValue: T) => {
     return undefined;
   }
 
-  const Context = createContext<FnType>(reactiveValue as FnType);
+  const ContextProvider = memo(function ContextProvider({
+    // eslint-disable-next-line react/prop-types
+    children,
+  }: PropsWithChildren) {
+    return jsx(Context.Provider, { value: reactiveValue, children });
+  }) as unknown as ReactComponent;
 
-  const ContextProvider = memo(function ContextProvider() {
-    return jsx(Context.Provider, { value: reactiveValue });
-  });
-
-  const useReactiveValueContext = () => {
-    return useContext(Context);
-  };
-
-  return [reactiveValue as FnType, ContextProvider, useReactiveValueContext];
+  return [reactiveValue as FnType<T>, ContextProvider];
 };
