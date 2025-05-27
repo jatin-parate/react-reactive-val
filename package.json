@@ -1,11 +1,25 @@
 {
   "name": "react-reactive-val",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.cjs.js",
+      "umd": "./dist/index.umd.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "tsc",
-    "prepublish": "npm run build",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:webpack": "webpack --config webpack.config.js",
+    "build": "npm run build:types && npm run build:webpack",
+    "prepublishOnly": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "peerDependencies": {
@@ -14,10 +28,17 @@
   "keywords": [],
   "author": "Jatin Parate <jatin4228@gmail.com>",
   "license": "ISC",
-  "type": "commonjs",
   "devDependencies": {
-    "react": "^19.1.0",
+    "@babel/core": "^7.24.0",
+    "@babel/preset-env": "^7.24.0",
+    "@babel/preset-react": "^7.23.3",
+    "@babel/preset-typescript": "^7.23.3",
     "@types/react": "^19.1.0",
-    "typescript": "^5.8.3"
+    "babel-loader": "^9.1.3",
+    "react": "^19.1.0",
+    "terser-webpack-plugin": "^5.3.10",
+    "typescript": "^5.8.3",
+    "webpack": "^5.90.3",
+    "webpack-cli": "^5.1.4"
   }
 }
