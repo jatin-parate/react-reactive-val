@@ -20,7 +20,7 @@ type FnType<T> = <U extends UpdaterType<T> | unknown | undefined>(
   updater?: U
 ) => U extends UpdaterType<T> ? undefined : ReactElement;
 
-const Context = createContext<FnType<ReactElement> | null>(null);
+export const Context = createContext<FnType<ReactElement> | null>(null);
 
 export const useReactiveValueContext = () => {
   return useContext(Context);
