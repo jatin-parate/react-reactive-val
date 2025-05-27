@@ -1,6 +1,6 @@
 {
   "name": "react-reactive-val",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A lightweight, type-safe reactive value management library for React applications",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -28,7 +28,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jatin4228/react-reactive-val.git"
+    "url": "git+https://github.com/jatin-parate/react-reactive-val.git"
   },
   "keywords": [
     "react",
@@ -41,9 +41,9 @@
   "author": "Jatin Parate <jatin4228@gmail.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jatin4228/react-reactive-val/issues"
+    "url": "https://github.com/jatin-parate/react-reactive-val/issues"
   },
-  "homepage": "https://github.com/jatin4228/react-reactive-val#readme",
+  "homepage": "https://github.com/jatin-parate/react-reactive-val#readme",
   "peerDependencies": {
     "react": "^19.0.0"
   },
