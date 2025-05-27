@@ -1,6 +1,6 @@
 # React Reactive Val
 
-A lightweight, type-safe reactive value management library for React applications. This library provides a simple way to manage reactive values in React components with minimal boilerplate.
+A lightweight, type-safe reactive value management library for React applications. This library provides a simple way to manage reactive values in React components with minimal boilerplate and includes powerful Context integration for efficient state sharing.
 
 ## Features
 
@@ -10,6 +10,7 @@ A lightweight, type-safe reactive value management library for React application
 - 🔄 **Reactive**: Values update automatically across components
 - 📦 **Tree-shakeable**: Only import what you need
 - 🌳 **Multiple formats**: Supports ESM, CommonJS, and UMD
+- 🌟 **Context Support**: Share reactive values efficiently through React Context
 
 ## Installation
 
@@ -34,9 +35,7 @@ function Counter() {
   return (
     <div>
       <p>Count: {count()}</p>
-      <button onClick={() => count(prev => prev + 1)}>
-        Increment
-      </button>
+      <button onClick={() => count(prev => prev + 1)}>Increment</button>
     </div>
   );
 }
@@ -44,11 +43,13 @@ function Counter() {
 
 ### Sharing State Between Components
 
+#### Using Direct Reference
+
 ```tsx
 import { reallyReactiveVal } from 'react-reactive-val';
 
 // Create a shared reactive value
-const sharedCount = reallyReactiveVal(0);
+const [sharedCount, CountProvider, useSharedCount] = reallyReactiveVal(0);
 
 function CounterDisplay() {
   return <div>Count: {sharedCount()}</div>;
@@ -57,12 +58,41 @@ function CounterDisplay() {
 function CounterButtons() {
   return (
     <div>
-      <button onClick={() => sharedCount(prev => prev + 1)}>
-        Increment
-      </button>
-      <button onClick={() => sharedCount(prev => prev - 1)}>
-        Decrement
-      </button>
+      <button onClick={() => sharedCount(prev => prev + 1)}>Increment</button>
+      <button onClick={() => sharedCount(prev => prev - 1)}>Decrement</button>
+    </div>
+  );
+}
+```
+
+#### Using Context (New in v2)
+
+```tsx
+import { reallyReactiveVal } from 'react-reactive-val';
+
+// Create a reactive value with context
+const [countValue, CountProvider, useCountContext] = reallyReactiveVal(0);
+
+function App() {
+  return (
+    <CountProvider>
+      <CounterDisplay />
+      <CounterButtons />
+    </CountProvider>
+  );
+}
+
+function CounterDisplay() {
+  const count = useCountContext();
+  return <div>Count: {count()}</div>;
+}
+
+function CounterButtons() {
+  const count = useCountContext();
+  return (
+    <div>
+      <button onClick={() => count(prev => prev + 1)}>Increment</button>
+      <button onClick={() => count(prev => prev - 1)}>Decrement</button>
     </div>
   );
 }
@@ -83,14 +113,17 @@ const value = useReactiveValue(initialValue);
 
 ### `reallyReactiveVal<T>(initialValue: T)`
 
-Creates a standalone reactive value that can be used across components.
+Creates a standalone reactive value that can be used across components. In v2, it returns a tuple containing the reactive value function, a Context Provider component, and a custom hook for accessing the value through context.
 
 ```tsx
-const value = reallyReactiveVal(initialValue);
+const [value, Provider, useValue] = reallyReactiveVal(initialValue);
 ```
 
 - `initialValue`: The initial value of the reactive state
-- Returns: A function that can both read and update the value
+- Returns: A tuple containing:
+  1. A function that can both read and update the value
+  2. A Context Provider component for wrapping consumers
+  3. A custom hook for accessing the value within the Context
 
 ### Usage with Value Getter/Setter
 
@@ -117,7 +150,10 @@ const count = useReactiveValue(0); // type: number
 const user = useReactiveValue<User | null>(null);
 
 // Type checking for updates
-user(prev => ({ ...prev, name: "John" })); // Type safe!
+user(prev => ({ ...prev, name: 'John' })); // Type safe!
+
+// With Context
+const [userValue, UserProvider, useUser] = reallyReactiveVal<User | null>(null);
 ```
 
 ## Contributing
@@ -125,9 +161,9 @@ user(prev => ({ ...prev, name: "John" })); // Type safe!
 Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
 
 1. Fork the repository
-2. Create your feature branch (\`git checkout -b feature/amazing-feature\`)
-3. Commit your changes (\`git commit -m 'Add some amazing feature'\`)
-4. Push to the branch (\`git push origin feature/amazing-feature\`)
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
 ## License
@@ -136,4 +172,4 @@ This project is licensed under the ISC License - see the [LICENSE](LICENSE) file
 
 ## Author
 
-Jatin Parate ([@jatin4228](https://github.com/jatin4228)) 
+Jatin Parate ([@jatin4228](https://github.com/jatin4228))
