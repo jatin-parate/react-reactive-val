@@ -11,6 +11,7 @@ A lightweight, type-safe reactive value management library for React application
 - 📦 **Tree-shakeable**: Only import what you need
 - 🌳 **Multiple formats**: Supports ESM, CommonJS, and UMD
 - 🌟 **Context Support**: Share reactive values efficiently through React Context
+- 🎭 **Side Effects**: Register callbacks to run when values change
 
 ## Installation
 
@@ -31,6 +32,42 @@ import useReactiveValue from 'react-reactive-val';
 
 function Counter() {
   const count = useReactiveValue(0);
+
+  return (
+    <div>
+      <p>Count: {count()}</p>
+      <button onClick={() => count(prev => prev + 1)}>Increment</button>
+    </div>
+  );
+}
+```
+
+### Side Effects (New in v2.1.0)
+
+You can register side effects to run whenever a reactive value changes:
+
+```tsx
+import { reallyReactiveVal, useReactiveEffect } from 'react-reactive-val';
+
+// Create a shared reactive value
+const [count, CountProvider] = reallyReactiveVal(0);
+
+// Register an effect directly
+const cleanup = count.effect(value => {
+  console.log(`Count changed to: ${value}`);
+  // Optional cleanup function
+  return () => console.log('Cleaning up previous effect');
+});
+
+// Later, you can clean up the effect
+cleanup();
+
+// Or use the hook in components for automatic cleanup
+function CounterWithEffect() {
+  useReactiveEffect(count, value => {
+    console.log(`Count in component is: ${value}`);
+    return () => console.log('Component effect cleanup');
+  });
 
   return (
     <div>
@@ -65,7 +102,7 @@ function CounterButtons() {
 }
 ```
 
-#### Using Context (New in v2)
+#### Using Context
 
 ```tsx
 import { reallyReactiveVal } from 'react-reactive-val';
@@ -113,7 +150,7 @@ const value = useReactiveValue(initialValue);
 
 ### `reallyReactiveVal<T>(initialValue: T)`
 
-Creates a standalone reactive value that can be used across components. In v2, it returns a tuple containing the reactive value function, a Context Provider component, and a custom hook for accessing the value through context.
+Creates a standalone reactive value that can be used across components. Returns a tuple containing the reactive value function, a Context Provider component, and a custom hook for accessing the value through context.
 
 ```tsx
 const [value, Provider, useValue] = reallyReactiveVal(initialValue);
@@ -121,9 +158,26 @@ const [value, Provider, useValue] = reallyReactiveVal(initialValue);
 
 - `initialValue`: The initial value of the reactive state
 - Returns: A tuple containing:
-  1. A function that can both read and update the value
+  1. A function that can both read and update the value, with an additional `effect` method
   2. A Context Provider component for wrapping consumers
   3. A custom hook for accessing the value within the Context
+
+### `useReactiveEffect<T>(reactiveValue: FnType<T>, callback: EffectCallback<T>)`
+
+A React hook for managing side effects with reactive values.
+
+```tsx
+useReactiveEffect(value, newValue => {
+  console.log(`Value changed to: ${newValue}`);
+  return () => {
+    // Optional cleanup
+  };
+});
+```
+
+- `reactiveValue`: The reactive value to watch
+- `callback`: Function to run when the value changes
+- The callback can optionally return a cleanup function
 
 ### Usage with Value Getter/Setter
 
@@ -136,6 +190,14 @@ value(newValue);
 
 // Update based on previous value
 value(prev => computeNewValue(prev));
+
+// Register a side effect
+const cleanup = value.effect(newValue => {
+  console.log(`Value changed to: ${newValue}`);
+  return () => {
+    // Optional cleanup
+  };
+});
 ```
 
 ## TypeScript Support
@@ -154,6 +216,14 @@ user(prev => ({ ...prev, name: 'John' })); // Type safe!
 
 // With Context
 const [userValue, UserProvider, useUser] = reallyReactiveVal<User | null>(null);
+
+// With Effects
+userValue.effect(user => {
+  console.log(`User updated: ${user?.name}`);
+  return () => {
+    // Cleanup is properly typed
+  };
+});
 ```
 
 ## Contributing
