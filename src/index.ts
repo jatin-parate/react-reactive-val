@@ -64,7 +64,7 @@ export const reallyReactiveVal = <T extends ReactNode>(initialValue: T) => {
     children,
   }: PropsWithChildren) {
     return jsx(Context.Provider, { value: reactiveValue, children });
-  }) as unknown as JSX.Element;
+  }) as unknown as (props: PropsWithChildren) => JSX.Element;
 
-  return [reactiveValue as FnType<T>, ContextProvider];
+  return [reactiveValue as FnType<T>, ContextProvider] as const;
 };
